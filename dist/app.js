@@ -104,8 +104,9 @@ function playTone(note){
 
 function finishLevel(){
   const stars=mistakes===0?3:mistakes<=3?2:1,reward=10+stars*5;
-  if(!progress.completed.includes(currentLevel)){progress.completed.push(currentLevel);progress.tokens+=reward;if(stars===3)progress.perfect++}else progress.tokens+=5;
-  save();$('#earnedTokens').textContent=progress.completed.includes(currentLevel)?reward:5;
+  const firstCompletion=!progress.completed.includes(currentLevel),earned=firstCompletion?reward:5;
+  if(firstCompletion){progress.completed.push(currentLevel);progress.tokens+=reward;if(stars===3)progress.perfect++}else progress.tokens+=5;
+  save();$('#earnedTokens').textContent=earned;
   $('#resultStars').textContent='★ '.repeat(stars)+'☆ '.repeat(3-stars);$('#resultStars').setAttribute('aria-label',`${stars} stars earned`);
   $('#resultTitle').textContent=stars===3?'That was note-perfect!':stars===2?'Lovely learning!':'You kept going!';
   $('#resultMessage').textContent=stars===1?'Every try makes your music brain stronger. No lives lost, ever.':'Your music-reading superpower just got stronger.';
