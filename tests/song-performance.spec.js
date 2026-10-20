@@ -1,0 +1,43 @@
+import {test,expect} from '@playwright/test';
+import {songs} from '../curriculum.js';
+test('continuous score advances without cooldown, follows rows, and preserves progress through settings',async({page})=>{
+  await page.addInitScript(()=>!localStorage.getItem('little-keys-progress-v2')&&localStorage.setItem('little-keys-progress-v2',JSON.stringify({completed:[1],purchasedSongs:['buns'],sound:false})));
+  await page.goto('/');await page.locator('[data-view="songs"]').first().click();await page.locator('[data-song="buns"]').click();
+  const pane=page.locator('.score-window');
+  await expect(pane).toBeVisible();
+  const height=await pane.evaluate(e=>e.clientHeight);
+  const rowHeight=await page.locator('.score-line').first().evaluate(e=>e.getBoundingClientRect().height);
+  expect(height).toBeGreaterThanOrEqual(rowHeight*2-2);
+  await page.keyboard.down('d');await page.keyboard.down('d');await page.keyboard.up('d');
+  await expect(page.locator('.song-progress')).toHaveAttribute('data-grown','1');
+  for(const note of songs[0].notes.slice(1,17))await page.locator(`[data-note="${note}"]`).click();
+  await expect(page.locator('.song-progress')).toHaveAttribute('data-grown','17');
+  await expect.poll(()=>pane.evaluate(e=>e.scrollTop)).toBeGreaterThan(0);
+  await page.locator('.play-toolbar [data-action="settings"]').click();
+  await page.locator('[data-shortcuts]').uncheck();await page.locator('#dialog [data-action="close"]').first().click();
+  await expect(page.locator('.piano kbd').first()).toBeHidden();
+  await expect(page.locator('.song-progress')).toHaveAttribute('data-grown','17');
+  await page.locator('.play-toolbar [data-language]').selectOption('zh-Hant');
+  await expect(page.locator('.song-progress')).toHaveAttribute('data-grown','17');
+  await page.locator('[data-action="performance"]').click();
+  await expect(page.locator('#toast.show')).toHaveCount(0);
+  await page.locator('[data-note="C4"]').click();
+  await expect(page.locator('.song-progress')).toHaveAttribute('data-grown','17');
+  await page.locator('[data-action="performance"]').click();
+  await page.screenshot({path:'test-results/song-score-desktop.png'});
+  await page.setViewportSize({width:375,height:667});
+  await page.screenshot({path:'test-results/song-score-phone.png'});
+  await page.reload();await page.locator('[data-view="free"]').first().click();
+  await expect(page.locator('.piano kbd').first()).toBeHidden();
+});
+
+test('bass register maps physical keys and touch to low notes and a bass staff',async({page})=>{
+  await page.goto('/');await page.locator('[data-view="free"]').first().click();
+  await page.locator('[data-register]').selectOption('bass');
+  await expect(page.locator('[data-note="C3"]')).toBeVisible();
+  await page.keyboard.press('a');await expect(page.locator('#free-staff')).toContainText('C3');
+  await expect(page.locator('#free-staff')).toContainText('𝄢');
+  await page.locator('[data-note="G3"]').click();await expect(page.locator('#free-staff')).toContainText('G3');
+  await page.locator('[data-register]').selectOption('treble');
+  await page.keyboard.press('a');await expect(page.locator('#free-staff')).toContainText('Middle C');
+});
