@@ -1,5 +1,6 @@
 // All learner-facing copy lives here. Parameters are text, never user HTML.
 const pairs = {
+ keyboardTip:['Using a keyboard? Open Settings to show the key letters. You can also tap the piano.','正在使用電腦鍵盤嗎？到設定開啟按鍵字母，就能看到對應按鍵。也可以直接點琴鍵。'],
  songGroup_basic:['First melodies','入門旋律'],songGroup_high:['Higher treble melodies','高音旋律'],songGroup_bass:['Bass-clef melodies','低音旋律'],songGroup_accidentals:['Sharps, flats & naturals','升降與還原記號'],
  originalStudy:['Original practice tune · suggested after lesson {n}','原創練習曲・建議學完第 {n} 關'],
 

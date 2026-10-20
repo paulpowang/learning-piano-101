@@ -14,6 +14,7 @@ test('continuous score advances without cooldown, follows rows, and preserves pr
   await expect(page.locator('.song-progress')).toHaveAttribute('data-grown','17');
   await expect.poll(()=>pane.evaluate(e=>e.scrollTop)).toBeGreaterThan(0);
   await page.locator('.play-toolbar [data-action="settings"]').click();
+  await page.locator('[data-shortcuts]').check();await expect(page.locator('.piano kbd').first()).toBeVisible();
   await page.locator('[data-shortcuts]').uncheck();await page.locator('#dialog [data-action="close"]').first().click();
   await expect(page.locator('.piano kbd').first()).toBeHidden();
   await expect(page.locator('.song-progress')).toHaveAttribute('data-grown','17');

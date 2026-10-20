@@ -720,7 +720,7 @@ for(const song of songs){
  song.stages=[...song.stages,...song.stages.map(phrase=>[...phrase])];
  song.phrases= song.stages.map(phrase=>phrase.length);
 }
-export const emptyProgress = () => ({completed:[],explored:[],sound:true,showShortcuts:true,locale:'en',purchased:[],equipped:[],purchasedSongs:[],completedSongs:[]});
+export const emptyProgress = () => ({completed:[],explored:[],sound:true,showShortcuts:false,locale:'en',purchased:[],equipped:[],purchasedSongs:[],completedSongs:[]});
 export const earnedTokens = p => lessons.filter(l=>p.completed.includes(l.id)).reduce((n,l)=>n+l.reward,0)+songs.filter(s=>p.completedSongs.includes(s.id)).reduce((n,s)=>n+s.reward,0);
 export const tokenCount = p => earnedTokens(p)-decorations.filter(d=>p.purchased.includes(d.id)).reduce((n,d)=>n+d.price,0)-songs.filter(s=>p.purchasedSongs.includes(s.id)).reduce((n,s)=>n+s.price,0);
 export const ownedDecorations = p => decorations.filter(d=>p.purchased.includes(d.id));
@@ -728,7 +728,7 @@ export const equippedDecorations = p => decorations.filter(d=>p.equipped.include
 export function normalizeProgress(data) {
  const completed=Array.isArray(data?.completed)?data.completed:[];
  const path=[];for(let n=1;n<=lessons.length&&completed.includes(n);n++)path.push(n);
- const p={...emptyProgress(),completed:path,explored:Array.isArray(data?.explored)?[...new Set(data.explored.filter(n=>notes.includes(n)))]:[],sound:data?.sound!==false,showShortcuts:data?.showShortcuts!==false,locale:data?.locale==='zh-Hant'?'zh-Hant':'en'};
+ const p={...emptyProgress(),completed:path,explored:Array.isArray(data?.explored)?[...new Set(data.explored.filter(n=>notes.includes(n)))]:[],sound:data?.sound!==false,showShortcuts:data?.showShortcuts===true,locale:data?.locale==='zh-Hant'?'zh-Hant':'en'};
  // Replay saved purchase order so earnings from a later-listed tune can fund an earlier one.
  for(const id of [...new Set(Array.isArray(data?.purchasedSongs)?data.purchasedSongs:[])]){
   const song=songs.find(s=>s.id===id);if(!song)continue;

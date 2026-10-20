@@ -32,3 +32,5 @@
 - The original chapter still earns 160 tokens and its badge at lesson 8. Eight additional lessons earn 30 each (400 total); chapter-one badges must stay earned after continuing.
 
 - The shop has three practice songs per new learning category (upper treble, bass, accidentals), in addition to the original three. New studies are labeled original, contain eight measures played twice, and display suggested lesson prerequisites without blocking purchases. Preserve arbitrary purchase order in local saves.
+
+- Keyboard shortcut letters default to hidden for touch-first learners. Preserve explicit saved preferences. After two consecutive unsupported physical letter keys during play, show one non-blocking settings hint per page session; touch, modifier shortcuts and held-key repeats must not trigger it.

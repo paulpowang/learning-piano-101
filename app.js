@@ -307,10 +307,14 @@ document.addEventListener('pointerdown',e=>{
   const key=e.target.closest('[data-note]');if(key&&!dialog.open){if(e.pointerType==='mouse'&&e.button!==0)return;e.preventDefault();key.focus({preventScroll:true});press(key.dataset.note);}
 });
 const keyMap=Object.fromEntries([...notes.map((n,i)=>[shortcuts[i],n]),['w','C#4'],['e','D#4'],['t','F#4'],['y','G#4'],['u','A#4']]);
+let invalidLetterCount=0,keyboardTipShown=false;
 document.addEventListener('keydown',e=>{
   if(dialog.open||e.ctrlKey||e.metaKey||e.altKey||!['lesson','free'].includes(view)||/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))return;
   const key=e.key.toLowerCase(),note=keyMap[key];
-  if(note){e.preventDefault();if(!e.repeat&&!held.has(key)){held.add(key);press(playedNote(note));}}
+  if(note){invalidLetterCount=0;e.preventDefault();if(!e.repeat&&!held.has(key)){held.add(key);press(playedNote(note));}}
+  if(!note&&!e.repeat&&!e.isComposing&&/^[a-z]$/.test(key)&&!progress.showShortcuts&&!keyboardTipShown&&!demoActive&&!performancePlaying){
+    if(++invalidLetterCount>=2){keyboardTipShown=true;toast(t('keyboardTip'));}
+  }
   // Native button activation must not repeatedly score while Enter/Space is held.
   if(e.repeat&&(e.key==='Enter'||e.key===' ')&&e.target.matches('[data-note]'))e.preventDefault();
 });
